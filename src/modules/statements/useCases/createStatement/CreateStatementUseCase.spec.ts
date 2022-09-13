@@ -52,4 +52,14 @@ describe("CreateUserUseCase", () => {
       await useCase.execute({ ...statementDto, user_id: "saddasd" });
     }).rejects.toBeInstanceOf(CreateStatementError.UserNotFound);
   });
+
+  it("should not create statement if balance is gonna be negative.", async () => {
+    expect(async () => {
+      await useCase.execute({
+        ...statementDto,
+        type: OperationType.WITHDRAW,
+        amount: 465464,
+      });
+    }).rejects.toBeInstanceOf(CreateStatementError.InsufficientFunds);
+  });
 });
